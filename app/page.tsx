@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import StaffSelection from "./components/StaffSelection";
+import DateTimeSelection from "./components/DateTimeSelection";
 
 const services = [
   {
@@ -120,8 +121,16 @@ export default function Home() {
           selectedStaff={selectedStaff}
           setSelectedStaff={setSelectedStaff}
           onBack={() => setStep(1)}
+          onContinue={() => setStep(3)}
         />
       )}
+
+      {step === 3 && (
+        <DateTimeSelection
+          onBack={() => setStep(2)}
+          onContinue={() => setStep(4)}
+      />
+    )}
     </div>
   </main>
 );
