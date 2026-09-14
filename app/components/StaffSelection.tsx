@@ -10,6 +10,7 @@ type StaffSelectionProps = {
   selectedStaff: number | "anyone" | null;
   setSelectedStaff: (value: number | "anyone") => void;
   onBack: () => void;
+  onContinue: () => void;
 };
 
 export default function StaffSelection({
@@ -18,6 +19,7 @@ export default function StaffSelection({
   selectedStaff,
   setSelectedStaff,
   onBack,
+  onContinue,
 
 }: StaffSelectionProps) {
     const availableStaff = staff.filter((person) =>
@@ -86,6 +88,7 @@ export default function StaffSelection({
 
         {selectedStaff && (
         <button
+            onClick={onContinue}
             className="mt-6 w-full rounded-xl bg-stone-900 px-6 py-4 font-medium text-white"
         >
             Continue

@@ -5,6 +5,8 @@ import StaffSelection from "./components/StaffSelection";
 import DateTimeSelection from "./components/DateTimeSelection";
 import CustomerDetails from "./components/CustomerDetails";
 import PaymentSelection from "./components/PaymentSelection";
+import BookingConfirmation from "./components/BookingConfirmation";
+import { availableDates } from "./data/bookingData";
 
 const services = [
   {
@@ -58,6 +60,15 @@ export default function Home() {
   const selectedServiceData = services.find(
   (service) => service.id === selectedService
   );
+
+  const selectedDateData = availableDates.find(
+  (item) => item.id === selectedDate
+);
+
+  const selectedStaffData =
+  selectedStaff === "anyone"
+    ? null
+    : staff.find((person) => person.id === selectedStaff);
 
   return (
   <main className="min-h-screen bg-stone-50 px-6 py-12">
@@ -159,7 +170,23 @@ export default function Home() {
           onBack={() => setStep(4)}
           onContinue={() => setStep(6)}
         />
-    )}
+      )}
+
+      {step === 6 && selectedServiceData && paymentMethod && (
+        <BookingConfirmation
+          serviceName={selectedServiceData.name}
+          staffName={
+            selectedStaff === "anyone"
+            ? "Anyone"
+            : selectedStaffData?.name ?? ""
+        }
+          date={selectedDateData?.date ?? ""}
+          time={selectedTime ?? ""}
+          customerName={name}
+          customerContact={contact}
+          paymentMethod={paymentMethod}
+        />
+      )}
     </div>
   </main>
 );
