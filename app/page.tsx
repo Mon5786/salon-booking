@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 import StaffSelection from "./components/StaffSelection";
 import DateTimeSelection from "./components/DateTimeSelection";
+import CustomerDetails from "./components/CustomerDetails";
 
 const services = [
   {
@@ -131,6 +132,13 @@ export default function Home() {
           onContinue={() => setStep(4)}
       />
     )}
+
+      {step === 4 && (
+        <CustomerDetails
+          onBack={() => setStep(3)}
+          onContinue={() => setStep(5)}
+        />
+      )}
     </div>
   </main>
 );
