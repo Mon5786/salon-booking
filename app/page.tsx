@@ -4,6 +4,7 @@ import { useState } from "react";
 import StaffSelection from "./components/StaffSelection";
 import DateTimeSelection from "./components/DateTimeSelection";
 import CustomerDetails from "./components/CustomerDetails";
+import PaymentSelection from "./components/PaymentSelection";
 
 const services = [
   {
@@ -46,10 +47,13 @@ const staff = [
 
 export default function Home() {
   const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [selectedStaff, setSelectedStaff] =
-  useState<number | "anyone" | null>(null);
-
+  const [selectedStaff, setSelectedStaff] = useState<number | "anyone" | null>(null);
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"online" | "salon" | null>(null);
   const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
 
   const selectedServiceData = services.find(
   (service) => service.id === selectedService
@@ -128,6 +132,10 @@ export default function Home() {
 
       {step === 3 && (
         <DateTimeSelection
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
           onBack={() => setStep(2)}
           onContinue={() => setStep(4)}
       />
@@ -135,10 +143,23 @@ export default function Home() {
 
       {step === 4 && (
         <CustomerDetails
+          name={name}
+          setName={setName}
+          contact={contact}
+          setContact={setContact}
           onBack={() => setStep(3)}
           onContinue={() => setStep(5)}
         />
       )}
+
+      {step === 5 && (
+        <PaymentSelection 
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+          onBack={() => setStep(4)}
+          onContinue={() => setStep(6)}
+        />
+    )}
     </div>
   </main>
 );

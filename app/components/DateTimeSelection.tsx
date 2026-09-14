@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
 
 type DateTimeSelectionProps = {
+  selectedDate: number | null;
+  setSelectedDate: (value: number | null) => void;
+  selectedTime: string | null;
+  setSelectedTime: (value: string | null) => void;
   onBack: () => void;
   onContinue: () => void;
 };
@@ -18,12 +21,13 @@ const availableTimes = ["09:00", "10:30", "12:00", "14:00", "15:30"];
 
 
 export default function DateTimeSelection({
+  selectedDate,
+  setSelectedDate,
+  selectedTime,
+  setSelectedTime,
   onBack,
   onContinue,
 }: DateTimeSelectionProps) {
-const [selectedDate, setSelectedDate] = useState<number | null>(null);
-const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
   return (
   <div>
     <p className="mb-2 text-sm font-medium uppercase tracking-widest text-stone-500">

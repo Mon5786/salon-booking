@@ -3,16 +3,22 @@
 import { useState } from "react";
 
 type CustomerDetailsProps = {
+  name: string;
+  setName: (value: string) => void;
+  contact: string;
+  setContact: (value: string) => void;
   onBack: () => void;
   onContinue: () => void;
 };
 
 export default function CustomerDetails({
+  name,
+  setName,
+  contact,
+  setContact,
   onBack,
   onContinue,
 }: CustomerDetailsProps) {
-const [name, setName] = useState("");
-const [contact, setContact] = useState("");
 
   return (
     <div>
