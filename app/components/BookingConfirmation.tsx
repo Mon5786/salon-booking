@@ -9,6 +9,7 @@ type BookingConfirmationProps = {
   customerContact: string;
   paymentMethod: "online" | "salon";
   onConfirm: () => void;
+  isSaving: boolean;
 };
 
 export default function BookingConfirmation({
@@ -20,6 +21,7 @@ export default function BookingConfirmation({
   customerContact,
   paymentMethod,
   onConfirm,
+  isSaving,
 }: BookingConfirmationProps) {
   return (
     <div>
@@ -73,9 +75,10 @@ export default function BookingConfirmation({
         </div>
         <button
           onClick={onConfirm}
-          className="mt-6 w-full rounded-xl bg-stone-900 px-6 py-4 font-medium text-white"
+          disabled={isSaving}
+          className="mt-6 w-full rounded-xl bg-stone-900 px-6 py-4 text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Confirm booking
+          {isSaving ? "Booking..." : "Confirm booking"}
         </button>
     </div>  
     </div>

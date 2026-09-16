@@ -8,6 +8,7 @@ import PaymentSelection from "./components/PaymentSelection";
 import BookingConfirmation from "./components/BookingConfirmation";
 import { availableDates } from "./data/bookingData";
 import { supabase } from "./lib/supabase";
+import BookingSuccess from "./components/BookingSuccess";
 
 const services = [
   {
@@ -71,7 +72,10 @@ export default function Home() {
     ? null
     : staff.find((person) => person.id === selectedStaff);
 
+  const [isSaving, setIsSaving] = useState(false);
+
 async function handleConfirmBooking() {
+  setIsSaving(true);
     const { error } = await supabase
     .from("bookings")
     .insert({
@@ -89,10 +93,12 @@ async function handleConfirmBooking() {
   console.error("Booking error code:", error.code);
   console.error("Booking error details:", error.details);
   console.error("Booking error hint:", error.hint);
+  setIsSaving(false);
   return;
 }
 
   console.log("Booking saved!");
+  setStep(7);
 }
   
   return (
@@ -211,8 +217,14 @@ async function handleConfirmBooking() {
           customerContact={contact}
           paymentMethod={paymentMethod}
           onConfirm={handleConfirmBooking}
+          isSaving={isSaving}
         />
       )}
+
+      {step === 7 && (
+        <BookingSuccess />
+      )}
+
     </div>
   </main>
 );
