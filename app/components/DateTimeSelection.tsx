@@ -1,7 +1,10 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { availableDates } from "../data/bookingData";
 
 type DateTimeSelectionProps = {
+  selectedStaff: number | "anyone" | null;
   selectedDate: number | null;
   setSelectedDate: (value: number | null) => void;
   selectedTime: string | null;
@@ -10,11 +13,18 @@ type DateTimeSelectionProps = {
   onContinue: () => void;
 };
 
+type BookedSlot = {
+  staff_id: number | null;
+  booking_date: string;
+  booking_time: string;
+};
+
 
 const availableTimes = ["09:00", "10:30", "12:00", "14:00", "15:30"];
 
 
 export default function DateTimeSelection({
+  selectedStaff,
   selectedDate,
   setSelectedDate,
   selectedTime,
@@ -22,6 +32,40 @@ export default function DateTimeSelection({
   onBack,
   onContinue,
 }: DateTimeSelectionProps) {
+
+  const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
+
+
+  useEffect(() => {
+  async function loadBookings() {
+    const response = await fetch("/api/availability");
+    const data = await response.json();
+
+    setBookedSlots(data);
+    console.log("Booked slots:", data);
+  }
+
+  loadBookings();
+}, []);
+
+const selectedDateData = availableDates.find(
+  (item) => item.id === selectedDate
+);
+
+function isTimeBooked(time: string) {
+  if (!selectedDateData || selectedStaff === null) {
+    return false;
+  }
+
+  return bookedSlots.some(
+    (slot) =>
+      slot.staff_id === selectedStaff &&
+      slot.booking_date === selectedDateData.value &&
+      slot.booking_time.startsWith(time)
+  );
+}
+
+
   return (
   <div>
     <p className="mb-2 text-sm font-medium uppercase tracking-widest text-stone-500">
@@ -72,19 +116,25 @@ export default function DateTimeSelection({
         </h2>
 
         <div className="mt-4 grid grid-cols-3 gap-3">
-          {availableTimes.map((time) => (
-            <button
-              key={time}
-              onClick={() => setSelectedTime(time)}
-              className={`rounded-xl border px-4 py-3 transition ${
-                selectedTime === time
-                  ? "border-stone-900 bg-stone-900 text-white"
-                  : "border-stone-200 bg-white text-stone-900"
-              }`}
-            >
-              {time}
-            </button>
-          ))}
+          {availableTimes.map((time) => {
+            const booked = isTimeBooked(time);
+            return (
+              <button
+                key={time}
+                disabled={booked}
+                onClick={() => setSelectedTime(time)}
+                className={`rounded-xl border px-4 py-3 transition ${
+                  booked
+                    ? "cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400"
+                    : selectedTime === time
+                    ? "border-stone-900 bg-stone-900 text-white"
+                    : "border-stone-200 bg-white text-stone-900"
+          }`}
+      >
+          {time}
+      </button>
+    );
+  })}
         </div>
       </div>
     )}

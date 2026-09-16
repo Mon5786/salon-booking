@@ -174,6 +174,7 @@ async function handleConfirmBooking() {
 
       {step === 3 && (
         <DateTimeSelection
+          selectedStaff={selectedStaff}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           selectedTime={selectedTime}
