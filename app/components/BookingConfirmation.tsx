@@ -8,6 +8,7 @@ type BookingConfirmationProps = {
   customerName: string;
   customerContact: string;
   paymentMethod: "online" | "salon";
+  onConfirm: () => void;
 };
 
 export default function BookingConfirmation({
@@ -18,6 +19,7 @@ export default function BookingConfirmation({
   customerName,
   customerContact,
   paymentMethod,
+  onConfirm,
 }: BookingConfirmationProps) {
   return (
     <div>
@@ -69,6 +71,12 @@ export default function BookingConfirmation({
                 {paymentMethod === "online" ? "Pay online" : "Pay at salon"}
             </p>
         </div>
+        <button
+          onClick={onConfirm}
+          className="mt-6 w-full rounded-xl bg-stone-900 px-6 py-4 font-medium text-white"
+        >
+          Confirm booking
+        </button>
     </div>  
     </div>
   );

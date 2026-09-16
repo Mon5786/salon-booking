@@ -7,6 +7,7 @@ import CustomerDetails from "./components/CustomerDetails";
 import PaymentSelection from "./components/PaymentSelection";
 import BookingConfirmation from "./components/BookingConfirmation";
 import { availableDates } from "./data/bookingData";
+import { supabase } from "./lib/supabase";
 
 const services = [
   {
@@ -70,6 +71,30 @@ export default function Home() {
     ? null
     : staff.find((person) => person.id === selectedStaff);
 
+async function handleConfirmBooking() {
+    const { error } = await supabase
+    .from("bookings")
+    .insert({
+      service_id: selectedService,
+      staff_id: selectedStaff === "anyone" ? null : selectedStaff,
+      booking_date: selectedDateData?.value,
+      booking_time: selectedTime,
+      customer_name: name,
+      customer_contact: contact,
+      payment_method: paymentMethod,
+    });
+
+  if (error) {
+  console.error("Booking error message:", error.message);
+  console.error("Booking error code:", error.code);
+  console.error("Booking error details:", error.details);
+  console.error("Booking error hint:", error.hint);
+  return;
+}
+
+  console.log("Booking saved!");
+}
+  
   return (
   <main className="min-h-screen bg-stone-50 px-6 py-12">
     <div className="mx-auto max-w-3xl">
@@ -185,6 +210,7 @@ export default function Home() {
           customerName={name}
           customerContact={contact}
           paymentMethod={paymentMethod}
+          onConfirm={handleConfirmBooking}
         />
       )}
     </div>
