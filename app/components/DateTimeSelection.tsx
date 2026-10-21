@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { availableDates } from "../data/bookingData";
+import type { StaffMember } from "./StaffSelection";
 
 type DateTimeSelectionProps = {
   selectedStaff: number | "anyone" | null;
@@ -9,6 +10,8 @@ type DateTimeSelectionProps = {
   setSelectedDate: (value: number | null) => void;
   selectedTime: string | null;
   setSelectedTime: (value: string | null) => void;
+  staff: StaffMember[];
+  selectedService: number;
   onBack: () => void;
   onContinue: () => void;
 };
@@ -29,6 +32,8 @@ export default function DateTimeSelection({
   setSelectedDate,
   selectedTime,
   setSelectedTime,
+  staff,
+  selectedService,
   onBack,
   onContinue,
 }: DateTimeSelectionProps) {
@@ -66,6 +71,27 @@ if (selectedDateData.value ===
   if (hours * 60 + minutes <= now.getHours() * 60 + now.getMinutes()) {
     return true;
   }
+}
+
+if (selectedStaff === "anyone") {
+  const eligibleStaff = staff.filter((person) =>
+    person.serviceIds.includes(selectedService)
+  );
+
+  if (eligibleStaff.length === 0) {
+    return true;
+  }
+
+  const allBooked = eligibleStaff.every((person) =>
+    bookedSlots.some(
+      (slot) =>
+        slot.staff_id === person.id &&
+        slot.booking_date === selectedDateData.value &&
+        slot.booking_time.startsWith(time)
+    )
+  );
+
+  return allBooked;
 }
 
   return bookedSlots.some(

@@ -1,4 +1,4 @@
-type StaffMember = {
+export type StaffMember = {
   id: number;
   name: string;
   serviceIds: number[];

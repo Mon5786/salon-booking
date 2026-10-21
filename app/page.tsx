@@ -172,8 +172,10 @@ async function handleConfirmBooking() {
         />
       )}
 
-      {step === 3 && (
+      {step === 3 && selectedService !== null && (
         <DateTimeSelection
+          staff={staff}
+          selectedService={selectedService}
           selectedStaff={selectedStaff}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
