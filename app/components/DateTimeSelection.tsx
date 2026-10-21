@@ -57,6 +57,17 @@ function isTimeBooked(time: string) {
     return false;
   }
 
+  const now = new Date();
+
+if (selectedDateData.value ===
+    `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`) {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  if (hours * 60 + minutes <= now.getHours() * 60 + now.getMinutes()) {
+    return true;
+  }
+}
+
   return bookedSlots.some(
     (slot) =>
       slot.staff_id === selectedStaff &&
