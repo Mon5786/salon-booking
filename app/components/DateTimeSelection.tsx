@@ -43,11 +43,23 @@ export default function DateTimeSelection({
 
   useEffect(() => {
   async function loadBookings() {
-    const response = await fetch("/api/availability");
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/availability");
+      const data = await response.json();
 
-    setBookedSlots(data);
-    console.log("Booked slots:", data);
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to load bookings");
+      }
+
+      if (!Array.isArray(data)) {
+        throw new Error("Availability API did not return an array");
+      }
+
+      setBookedSlots(data);
+      console.log("Booked slots:", data);
+    } catch (error) {
+      console.error("Error loading bookings:", error);
+    }
   }
 
   loadBookings();

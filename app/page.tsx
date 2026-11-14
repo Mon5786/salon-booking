@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import StaffSelection from "./components/StaffSelection";
 import DateTimeSelection from "./components/DateTimeSelection";
@@ -7,7 +6,6 @@ import CustomerDetails from "./components/CustomerDetails";
 import PaymentSelection from "./components/PaymentSelection";
 import BookingConfirmation from "./components/BookingConfirmation";
 import { availableDates } from "./data/bookingData";
-import { supabase } from "./lib/supabase";
 import BookingSuccess from "./components/BookingSuccess";
 
 const services = [
@@ -74,33 +72,55 @@ export default function Home() {
 
   const [isSaving, setIsSaving] = useState(false);
 
+
 async function handleConfirmBooking() {
+  if (
+    !selectedService ||
+    selectedStaff === null ||
+    !selectedDateData ||
+    !selectedTime ||
+    !paymentMethod
+  ) {
+    alert("Please complete all booking information.");
+    return;
+  }
+
   setIsSaving(true);
-    const { error } = await supabase
-    .from("bookings")
-    .insert({
-      service_id: selectedService,
-      staff_id: selectedStaff === "anyone" ? null : selectedStaff,
-      booking_date: selectedDateData?.value,
-      booking_time: selectedTime,
-      customer_name: name,
-      customer_contact: contact,
-      payment_method: paymentMethod,
+
+  try {
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        service_id: selectedService,
+        staff_id: selectedStaff,
+        booking_date: selectedDateData.value,
+        booking_time: selectedTime,
+        customer_name: name,
+        customer_contact: contact,
+        payment_method: paymentMethod,
+      }),
     });
 
-  if (error) {
-  console.error("Booking error message:", error.message);
-  console.error("Booking error code:", error.code);
-  console.error("Booking error details:", error.details);
-  console.error("Booking error hint:", error.hint);
-  setIsSaving(false);
-  return;
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Booking failed.");
+      return;
+    }
+
+    console.log("Booking saved:", data);
+    setStep(7);
+  } catch (error) {
+    console.error("Booking error:", error);
+    alert("Something went wrong. Please try again.");
+  } finally {
+    setIsSaving(false);
+  }
 }
 
-  console.log("Booking saved!");
-  setStep(7);
-}
-  
   return (
   <main className="min-h-screen bg-stone-50 px-6 py-12">
     <div className="mx-auto max-w-3xl">
